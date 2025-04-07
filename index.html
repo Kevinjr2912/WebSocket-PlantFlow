@@ -1,0 +1,168 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket Client</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <script>
+      const socket = new WebSocket("ws://localhost:8081/ws");
+
+      socket.onopen = () => {
+        console.log("Connected to server");
+        socket.send("Hello Server!");
+      };
+
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+
+        if (message.type === "monitoring") {
+          const data = JSON.parse(message.data);
+
+          console.log("ID del dispositivo:", data.Id_device);
+        }
+      };
+
+      socket.onclose = () => {
+        console.log("Disconnected from server");
+      };
+    </script>
+  </body>
+
+  
+</html> -->
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Datos Ambientales</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #2C2D35;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h2 {
+        color: #ffffff;
+        margin-bottom: 30px;
+        font-size: 28px;
+      }
+
+      .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        width: 100%;
+        max-width: 900px;
+      }
+
+      .card {
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .data-label {
+        font-size: 18px;
+        color: #2C2D35;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .data-value {
+        font-size: 24px;
+        color: #06BB93;
+        font-weight: bold;
+      }
+
+      .btn {
+        margin-top: 40px;
+        padding: 12px 30px;
+        background-color: #06BB93;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #059e7f;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Datos Ambientales</h2>
+
+    <div class="card-container">
+      <div class="card">
+        <p class="data-label">Temperatura</p>
+        <p class="data-value"><span id="temp">--</span> °C</p>
+      </div>
+      <div class="card">
+        <p class="data-label">Humedad</p>
+        <p class="data-value"><span id="humidity">--</span> %</p>
+      </div>
+      <div class="card">
+        <p class="data-label">Calidad de Aire</p>
+        <p class="data-value"><span id="air-quality">--</span> PPM</p>
+      </div>
+      <div class="card">
+        <p class="data-label">Luz Solar</p>
+        <p class="data-value"><span id="light">--</span> LUX</p>
+      </div>
+    </div>
+
+
+    <script>
+      const socket = new WebSocket("ws://localhost:8081/ws");
+
+      const tempElement = document.getElementById("temp");
+      const humidityElement = document.getElementById("humidity");
+      const airElement = document.getElementById("air-quality");
+      const lightElement = document.getElementById("light");
+    
+      socket.onopen = () => {
+        console.log("Connected to server");
+        socket.send("Hello Server!");
+      };
+    
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        
+        if (message.type === "monitoring") {
+          const data = JSON.parse(message.data);
+    
+          console.log("Datos recibidos:", data);
+          
+          humidityElement.textContent = data.Humedity ?? '--';
+          tempElement.textContent = data.Temp ?? '--';
+          lightElement.textContent = data.Sun ?? '--';
+          airElement.textContent = data.Air ?? '--';
+        }
+      };
+    
+      socket.onclose = () => {
+        console.log("Disconnected from server");
+      };
+    </script>
+    
+  </body>
+</html>
